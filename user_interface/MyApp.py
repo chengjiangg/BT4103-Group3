@@ -3,6 +3,8 @@ import pandas as pd
 import plotly.express as px
 import base64
 import io
+from classes.utils import run_prediction
+model_weight_path = "saved_models/model_weights.pth"
 
 
 def load_dataset():
@@ -28,13 +30,20 @@ def load_dataset():
 
 
 def predict(df):
+    prediction = run_prediction(df, model_weight_path, batch_size=1)
+    text = prediction[0]
+    entity = prediction[1]
+    emotion = prediction[2]
+    stance = prediction[3]
+    prediction_df = pd.DataFrame(list(zip(text, entity, emotion, stance)), columns=[
+                                 'text', 'entity', 'emotion', 'stance'])
     # Get counts for emotion
-    emotion_count = df['emotion'].value_counts().rename_axis(
+    emotion_count = prediction_df['emotion'].value_counts().rename_axis(
         'emotion').reset_index(name="counts")
     # Get counts for stance
-    stance_count = df['stance'].value_counts().rename_axis(
+    stance_count = prediction_df['stance'].value_counts().rename_axis(
         'stance').reset_index(name="counts")
-    return emotion_count, stance_count
+    return prediction_df, emotion_count, stance_count
 
 
 def plot_fig(df, xCol, yCol, title, labels):
@@ -60,7 +69,7 @@ def main():
     result = st.sidebar.button("Run")
     if dataset is not None and result:
         # Get counts of emotion and stance of prediction
-        emotion_count, stance_count = predict(dataset)
+        prediction_df, emotion_count, stance_count = predict(dataset)
         # Plot bar chart for emotion
         emotion_labels = {"emotion": "Emotion", "counts": "Counts"}
         emotion_fig = plot_fig(emotion_count, "emotion",
@@ -74,8 +83,8 @@ def main():
         st.plotly_chart(emotion_fig)
         st.plotly_chart(stance_fig)
         st.header('Output')
-        st.write(dataset)
-        linko = export_to_excel(dataset)
+        st.write(prediction_df)
+        linko = export_to_excel(prediction_df)
         st.markdown(linko, unsafe_allow_html=True)
     else:
         st.write("Please upload an excel file to the application")

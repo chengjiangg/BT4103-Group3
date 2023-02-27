@@ -22,7 +22,11 @@ def load_dataset():
         try:
             # Read excel file
             df = pd.read_excel(uploaded_file)
-            return df
+            # Column header must be strictyl 'text' and 'entity'
+            if df.columns[0] != 'text' or df.columns[1] != 'entity':
+                st.warning('File format incorrect. Refer to documentation.')
+            else:
+                return df
         except Exception as e:
             print(e)
     else:
@@ -80,6 +84,7 @@ def main():
                               "counts", "Stance Counts", stance_labels)
         # Start of Output
         st.header('Label Statistics')
+        st.metric('Total Labelled', len(dataset.index))
         st.plotly_chart(emotion_fig)
         st.plotly_chart(stance_fig)
         st.header('Output')

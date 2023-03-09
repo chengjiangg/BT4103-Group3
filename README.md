@@ -18,7 +18,7 @@ To install the dependencies, you can simply follow this steps.
 Clone the project repository:
 ```bash
 git clone https://github.com/chengjiangg/BT4103-Group3.git
-cd user_interface
+cd BT4103-Group3/user_interface
 ```
 
 To create and activate the virtual environment, follow these steps:

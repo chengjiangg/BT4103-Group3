@@ -13,7 +13,7 @@ def load_dataset():
     # Select language
     langauge = st.sidebar.selectbox(
         "Select language",
-        ("English", "Chinese")
+        ("English", "Mandarin")
     )
     # Setup file upload
     uploaded_file = st.sidebar.file_uploader(
@@ -31,15 +31,19 @@ def load_dataset():
             print(e)
     else:
         return None
-    
+
+
 def entities_info(df, filtered_entities):
     df_filtered = df[df['entity'].isin(filtered_entities)]
-    entity_emotion_count =  pd.DataFrame(df_filtered['emotion'].value_counts(dropna=True, sort=True)).reset_index()
+    entity_emotion_count = pd.DataFrame(
+        df_filtered['emotion'].value_counts(dropna=True, sort=True)).reset_index()
     entity_emotion_count.columns = ['emotion', 'counts']
-    entity_stance_count = pd.DataFrame(df_filtered['stance'].value_counts(dropna=True, sort=True)).reset_index()
+    entity_stance_count = pd.DataFrame(
+        df_filtered['stance'].value_counts(dropna=True, sort=True)).reset_index()
     entity_stance_count.columns = ['stance', 'counts']
     return entity_emotion_count, entity_stance_count
-    
+
+
 def predict(df):
     prediction = run_prediction(df, model_weight_path, batch_size=1)
     text = prediction[0]
@@ -76,7 +80,7 @@ def export_to_excel(df):
 def main():
     # Title of the app
     st.title("Multi-Lingual Text Classification")
-    dataset = load_dataset() 
+    dataset = load_dataset()
     result = st.sidebar.button("Run")
     if 'dataset' in st.session_state and dataset is not None and dataset.equals(st.session_state['dataset']):
         dataset = st.session_state['dataset']
@@ -108,25 +112,26 @@ def main():
         st.metric('Total Labelled', len(dataset.index))
         col1, col2 = st.columns(2)
         with col1:
-            st.plotly_chart(emotion_fig,use_container_width=True)
+            st.plotly_chart(emotion_fig, use_container_width=True)
         with col2:
-            st.plotly_chart(stance_fig,use_container_width=True)
+            st.plotly_chart(stance_fig, use_container_width=True)
 
-        #For filter functions
-        filter = st.multiselect('Select Entities For Breakdown Statistics:',entity_list,entity_list[:2], key = "my_multi")
+        # For filter functions
+        filter = st.multiselect('Select Entities For Breakdown Statistics:',
+                                entity_list, entity_list[:2], key="my_multi")
         filtered_entities = st.session_state['my_multi']
-        entity_emotion_count, entity_stance_count = entities_info(prediction_df, filtered_entities)
+        entity_emotion_count, entity_stance_count = entities_info(
+            prediction_df, filtered_entities)
         entity_emotion_fig = plot_fig(entity_emotion_count, "emotion",
-                            "counts", "Selected Entity Emotion Counts", emotion_labels)
+                                      "counts", "Selected Entity Emotion Counts", emotion_labels)
         entity_stance_fig = plot_fig(entity_stance_count, "stance",
-                            "counts", "Selected Entity Stance Counts", stance_labels)
-        
+                                     "counts", "Selected Entity Stance Counts", stance_labels)
+
         col11, col22 = st.columns(2)
         with col11:
-            st.plotly_chart(entity_emotion_fig,use_container_width=True)
+            st.plotly_chart(entity_emotion_fig, use_container_width=True)
         with col22:
-            st.plotly_chart(entity_stance_fig,use_container_width=True)
-
+            st.plotly_chart(entity_stance_fig, use_container_width=True)
 
         st.header('Output')
         st.write(prediction_df)

@@ -44,6 +44,8 @@ $ virtualenv env
 
 # Activate the virtual environment:
 $ source env/bin/activate
+# OR
+$ env\Scripts\activate
 
 # To deactivate (when you're done):
 (env)$ deactivate

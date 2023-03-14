@@ -7,7 +7,7 @@ This repository contains code to build a Streamlit web app that serves an Multi-
 
 Before you begin, ensure you have met the following requirements:
 
-* You have a _Windows/Linux/Mac_ machine running [Python 3.6+](https://www.python.org/).
+* You have a _Windows/Linux/Mac_ machine running [Python 3.8](https://www.python.org/).
 * You have installed the latest versions of [`pip`](https://pip.pypa.io/en/stable/installation/) and [`virtualenv`](https://virtualenv.pypa.io/en/latest/installation.html) or `conda` ([Anaconda](https://www.anaconda.com/distribution/)).
 
 

@@ -1,5 +1,6 @@
 import torch
 from torch.utils.data import DataLoader
+import torch.nn.functional as F
 
 from .dataset import SocialMediaDS
 from .model import DoubleClassifier
@@ -44,12 +45,16 @@ def run_prediction(dataset, model_weight_path,
         for data in dl:
             original_comments, target_entities, comments = data
             emo_outputs, stance_outputs = model(comments)
-
+            
             text.extend(original_comments)
             entities.extend(target_entities)
-            emotions.extend(emo_outputs.argmax(-1).detach().cpu().numpy())
-            stances.extend(stance_outputs.argmax(-1).detach().cpu().numpy())
-    emotions = [map_emotion(ds.emotion_labels, x) for x in emotions]
-    stances = [map_stance(ds.stance_labels, x) for x in stances]
+            
+            emo_outputs = F.softmax(emo_outputs, dim=-1)
+            emotions.extend(emo_outputs.detach().cpu().numpy())
+            
+            stance_outputs = F.softmax(stance_outputs, dim=-1)
+            stances.extend(stance_outputs.detach().cpu().numpy())
+#     emotions = [map_emotion(ds.emotion_labels, x) for x in emotions]
+#     stances = [map_stance(ds.stance_labels, x) for x in stances]
 
     return text, entities, emotions, stances

@@ -50,7 +50,7 @@ class SocialMediaDS(Dataset):
         entity = entity.strip()
 
         comment = row['text']
-        comment = re.sub(f'\\b{entity}\\b', '[ENTITY]', comment)
+        comment = comment.replace(entity, "[ENTITY]")
         comment = comment.split()
 
         # long comments

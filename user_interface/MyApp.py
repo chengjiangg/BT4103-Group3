@@ -65,9 +65,9 @@ def predict(df):
     return prediction_df, emotion_count, stance_count
 
 
-def plot_fig(df, xCol, yCol, title, labels):
-    fig = px.bar(df, x=xCol, y=yCol,
-                 color=xCol, text=yCol, title=title, labels=labels)
+def plot_fig(df, xCol, yCol, title, labels, colorMap):
+    fig = px.bar(df, x=xCol, y=yCol, color=xCol,
+                 color_discrete_map=colorMap, text=yCol, title=title, labels=labels)
     return fig
 
 
@@ -105,12 +105,16 @@ def main():
         entity_list = list(set(prediction_df['entity'].to_list()))
         # Plot bar chart for emotion
         emotion_labels = {"emotion": "Emotion", "counts": "Counts"}
+        emotion_color_map = {'SURPRISE': '#FFAA1D', 'JOY': '#FFFF00', 'SADNESS': '#0000FF',
+                             'ANGER': '#FF0000', 'FEAR': '#A020F0', 'DISGUST': '#00FF00', 'NEUTRAL': '#808080'}
         emotion_fig = plot_fig(emotion_count, "emotion",
-                               "counts", "Emotion Counts", emotion_labels)
+                               "counts", "Emotion Counts", emotion_labels, emotion_color_map)
         # Plot bar chart for stance
         stance_labels = {"stance": "Stance", "counts": "Counts"}
+        stance_color_map = {'NONE': '#808080',
+                            'AGAINST': '#FF0000', 'FAVOR': '#00FF00'}
         stance_fig = plot_fig(stance_count, "stance",
-                              "counts", "Stance Counts", stance_labels)
+                              "counts", "Stance Counts", stance_labels, stance_color_map)
         # Start of Output
         st.header('Label Statistics')
         st.metric('Total Labelled', len(dataset.index))
@@ -127,9 +131,9 @@ def main():
         entity_emotion_count, entity_stance_count = entities_info(
             prediction_df, filtered_entities)
         entity_emotion_fig = plot_fig(entity_emotion_count, "emotion",
-                                      "counts", "Selected Entity Emotion Counts", emotion_labels)
+                                      "counts", "Selected Entity Emotion Counts", emotion_labels, emotion_color_map)
         entity_stance_fig = plot_fig(entity_stance_count, "stance",
-                                     "counts", "Selected Entity Stance Counts", stance_labels)
+                                     "counts", "Selected Entity Stance Counts", stance_labels, stance_color_map)
 
         col11, col22 = st.columns(2)
         with col11:

@@ -48,10 +48,14 @@ def predict(df):
     prediction = run_prediction(df, model_weight_path, batch_size=1)
     text = prediction[0]
     entity = prediction[1]
-    emotion = prediction[2]
-    stance = prediction[3]
+    emotion_prob_df = prediction[2]
+    stance_prob_df = prediction[3]
+    emotion = prediction[4]
+    stance = prediction[5]
     prediction_df = pd.DataFrame(list(zip(text, entity, emotion, stance)), columns=[
                                  'text', 'entity', 'emotion', 'stance'])
+    prediction_df = pd.concat(
+        [prediction_df, emotion_prob_df, stance_prob_df], axis=1)
     # Get counts for emotion
     emotion_count = prediction_df['emotion'].value_counts().rename_axis(
         'emotion').reset_index(name="counts")
@@ -118,7 +122,7 @@ def main():
 
         # For filter functions
         filter = st.multiselect('Select Entities For Breakdown Statistics:',
-                                entity_list, entity_list[:2], key="my_multi")
+                                entity_list, key="my_multi")
         filtered_entities = st.session_state['my_multi']
         entity_emotion_count, entity_stance_count = entities_info(
             prediction_df, filtered_entities)

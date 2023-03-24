@@ -8,9 +8,11 @@ from transformers import AutoTokenizer
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-
-class SocialMediaDS(Dataset):
-    def __init__(self, dataset, model_ckpt, max_token_length=50):
+class EN_SocialMediaDS(Dataset):
+    def __init__(self, data_path, 
+                 sheet_name, 
+                 model_ckpt, 
+                 max_token_length=50):
         super().__init__()
         self.max_token_length = max_token_length
 
@@ -31,14 +33,10 @@ class SocialMediaDS(Dataset):
         ]
 
         # load excel
-        # self.data = pd.read_excel(data_path, sheet_name=sheet_name)
-        self.data = dataset
-        # self.data = pd.read_csv(data_path)
-        # self.data = data.reset_index()
+        self.data = pd.read_excel(data_path, sheet_name=sheet_name)
 
         self.tokenizer = AutoTokenizer.from_pretrained(model_ckpt)
-        self.tokenizer.add_special_tokens(
-            {"additional_special_tokens": ["[ENTITY]"]})
+        self.tokenizer.add_special_tokens({"additional_special_tokens": ["[ENTITY]"]})
 
     def __len__(self):
         return len(self.data)
@@ -64,9 +62,17 @@ class SocialMediaDS(Dataset):
             start = max(entity_ind - int(self.max_token_length/2), 0)
             end = start + self.max_token_length
             comment = comment[start:end]
+            
         comment = ' '.join(comment)
         comment = comment.replace("\\", "")
-        return row['text'], row['entity'], f"{comment} [SEP] [ENTITY]"
+
+        emotion = row['emotion']
+        emotion = self.emotion_labels.index(emotion)
+
+        stance = row['stance']
+        stance = self.stance_labels.index(stance)
+
+        return f"{comment} [SEP] [ENTITY]", emotion, stance
 
     def choose(self):
         return self[randint(0, len(self)-1)]
@@ -78,9 +84,11 @@ class SocialMediaDS(Dataset):
         return self.tokenizer.decode(input_id)
 
     def collate_fn(self, data):
-        original_comments, entities, comments = zip(*data)
+        comments, emotions, stances = zip(*data)
         comments = self.tokenizer(comments,
                                   padding=True,
                                   return_tensors='pt')
-        comments = {k: v.to(device) for k, v in comments.items()}
-        return original_comments, entities, comments
+        comments = {k:v.to(device) for k, v in comments.items()}
+        emotions = torch.tensor(emotions).long().to(device)
+        stances = torch.tensor(stances).long().to(device)
+        return comments, emotions, stances

@@ -52,6 +52,12 @@ data_path = os.path.join("./data", args.excel_filename)
 train_data_path = "./data/temp/train.xlsx"
 val_data_path = "./data/temp/val.xlsx"
 model_weight_dir = os.path.join("./model_weights", args.saved_model_name)
+
+# create dir
+if not os.path.exists('./logs'):
+    os.makedirs('./logs')
+if not os.path.exists('./model_weights'):
+    os.makedirs('./model_weights')
 if not os.path.exists(model_weight_dir):
     os.makedirs(model_weight_dir)
 

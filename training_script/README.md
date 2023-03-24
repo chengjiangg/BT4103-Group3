@@ -55,6 +55,8 @@ The model can be trained end-to-end with the following code:
 python main.py --excel_filename en_dataset.xlsx --sheet_name Sheet1 --classifer_type en
 ```
 
+Every epoch, the training log and model weight will be saved in the `logs/training.log` file and `model_weights/text_classifier` directory respectively. The log filename and model weight directory basename can be configured via the command-line options `log_filename` and `saved_model_name` respectively.
+
 **NOTE**
 - `log_filename`, and `saved_model_name` should be specified to avoid overwriting the original file. 
 - `classifier_type` model language to initialized based on the [ISO 639-1 language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes). Current supported language code **[en, zh]**.

@@ -10,8 +10,8 @@ from torch import optim
 from torch.utils.data import DataLoader
 
 from utils import *
-from models.en_model import EN_DoubleClassifier
-from datasets.en_dataset import EN_SocialMediaDS
+from model import DoubleClassifier
+from dataset import EN_SocialMediaDS, ZH_SocialMediaDS
 
 device = 'cuda' if torch.cuda.is_available() else "cpu"
 parser = argparse.ArgumentParser(description= "Multi-Lingual Text Classifier")
@@ -76,7 +76,9 @@ log(f'Size of validation data: {len(val_df)}')
 if args.classifier_type == "en":
     encoder_ckpt = "bert-base-uncased"
     SocialMediaDS = EN_SocialMediaDS
-    DoubleClassifier = EN_DoubleClassifier
+elif args.classifier_type == "zh":
+    encoder_ckpt = "hfl/chinese-bert-wwm-ext"
+    SocialMediaDS = ZH_SocialMediaDS
     
 log(f"Initialized {args.classifier_type} with {encoder_ckpt} encoder")
 train_ds = SocialMediaDS(train_data_path, args.sheet_name, encoder_ckpt)

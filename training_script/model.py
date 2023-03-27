@@ -2,7 +2,7 @@
 from torch import nn
 from transformers import AutoModel
 
-class EN_DoubleClassifier(nn.Module):
+class DoubleClassifier(nn.Module):
     def __init__(self, model_ckpt, 
                  emotion_nlabels=1, 
                  stance_nlabels=1, 

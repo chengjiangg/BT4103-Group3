@@ -21,11 +21,11 @@ def load_dataset():
         try:
             # Read excel file
             df = pd.read_excel(uploaded_file)
-            # Column header must be strictyl 'text' and 'entity'
+            # Column header must be strictly 'text' and 'entity'
             if df.columns[0] != 'text' or df.columns[1] != 'entity':
                 st.warning('File format incorrect. Refer to documentation.')
             else:
-                return df
+                return df, langauge
         except Exception as e:
             print(e)
     else:
@@ -45,11 +45,12 @@ def entities_info(df, filtered_entities):
 
 def predict(df, model_type):
     if model_type.lower() == 'en':
-        model_weight_path = "saved_models/en_model_weights.pth"
-    elif model_type.lower() == 'zh':
-        model_weight_path = "saved_models/zh_model_weights.pth"
-        
-    prediction = run_prediction(df, model_weight_path, model_type, batch_size=1)
+        model_weight_path = "saved_models/en_model_weight.pth"
+    else:
+        model_weight_path = "saved_models/zh_model_weight.pth"
+
+    prediction = run_prediction(
+        df, model_weight_path, model_type, batch_size=1)
     text = prediction[0]
     entity = prediction[1]
     emotion_prob_df = prediction[2]
@@ -88,7 +89,12 @@ def export_to_excel(df):
 def main():
     # Title of the app
     st.title("Multi-Lingual Text Classification")
-    dataset = load_dataset()
+    options = load_dataset()
+    dataset = None
+    if options != None:
+        dataset = options[0]
+        langauge = options[1]
+        langauge = "en" if langauge == "English" else "zh"
     result = st.sidebar.button("Run")
     if 'dataset' in st.session_state and dataset is not None and dataset.equals(st.session_state['dataset']):
         dataset = st.session_state['dataset']
@@ -100,7 +106,8 @@ def main():
             emotion_count = st.session_state['emotion_count']
             stance_count = st.session_state['stance_count']
         else:
-            prediction_df, emotion_count, stance_count = predict(dataset)
+            prediction_df, emotion_count, stance_count = predict(
+                dataset, langauge)
             st.session_state['prediction_df'] = prediction_df
             st.session_state['emotion_count'] = emotion_count
             st.session_state['stance_count'] = stance_count

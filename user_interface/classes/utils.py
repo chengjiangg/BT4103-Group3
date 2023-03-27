@@ -9,10 +9,11 @@ from .model import DoubleClassifier
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
+
 def get_dataloader(dataset, model_type, batch_size=32):
     if model_type.lower() == 'en':
         ds = EN_SocialMediaDS(dataset, 'bert-base-uncased')
-    elif model_type.lower() == 'zh':
+    else:
         ds = ZH_SocialMediaDS(dataset, 'hfl/chinese-bert-wwm-ext')
     dl = DataLoader(ds, batch_size=batch_size, collate_fn=ds.collate_fn)
     return ds, dl
@@ -21,14 +22,15 @@ def get_dataloader(dataset, model_type, batch_size=32):
 def get_model(model_weight_path, model_type, tokenizer_size):
     if model_type.lower() == 'en':
         model_ckpt = 'bert-base-uncased'
-    elif model_type.lower() == 'zh':
+    else:
         model_ckpt = 'hfl/chinese-bert-wwm-ext'
 
-    model = DoubleClassifier(model_ckpt, 
-                             emotion_nlabels=7, 
+    model = DoubleClassifier(model_ckpt,
+                             emotion_nlabels=7,
                              stance_nlabels=3,
                              tokenizer_size=tokenizer_size).to(device)
-    model_weight = torch.load(model_weight_path, map_location=torch.device(device))
+    model_weight = torch.load(
+        model_weight_path, map_location=torch.device(device))
     model.load_state_dict(model_weight)
     return model
 

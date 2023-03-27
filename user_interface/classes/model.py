@@ -1,5 +1,4 @@
 from torch import nn
-
 from transformers import AutoModel
 
 class DoubleClassifier(nn.Module):

@@ -4,7 +4,6 @@ import plotly.express as px
 import base64
 import io
 from classes.utils import run_prediction
-model_weight_path = "saved_models/model_weights.pth"
 
 
 def load_dataset():
@@ -44,8 +43,13 @@ def entities_info(df, filtered_entities):
     return entity_emotion_count, entity_stance_count
 
 
-def predict(df):
-    prediction = run_prediction(df, model_weight_path, batch_size=1)
+def predict(df, model_type):
+    if model_type.lower() == 'en':
+        model_weight_path = "saved_models/en_model_weights.pth"
+    elif model_type.lower() == 'zh':
+        model_weight_path = "saved_models/zh_model_weights.pth"
+        
+    prediction = run_prediction(df, model_weight_path, model_type, batch_size=1)
     text = prediction[0]
     entity = prediction[1]
     emotion_prob_df = prediction[2]

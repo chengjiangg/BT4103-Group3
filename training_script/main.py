@@ -38,6 +38,12 @@ parser.add_argument('--stratify_on', type=str, default="emotion", help="column t
 parser.add_argument('--freeze_encoder', action='store_true')
 parser.add_argument('--classifier_type', type=str, default="", help='The type of classifier to initialize based on language. OPTION: [en, zh]')
 
+# create dir
+if not os.path.exists('./logs'):
+    os.makedirs('./logs')
+if not os.path.exists('./model_weights'):
+    os.makedirs('./model_weights')
+
 # initialization
 args = parser.parse_args()
 log = init_logger(os.path.join('./logs', args.log_filename), verbose=args.verbose)
@@ -54,10 +60,6 @@ val_data_path = "./data/temp/val.xlsx"
 model_weight_dir = os.path.join("./model_weights", args.saved_model_name)
 
 # create dir
-if not os.path.exists('./logs'):
-    os.makedirs('./logs')
-if not os.path.exists('./model_weights'):
-    os.makedirs('./model_weights')
 if not os.path.exists(model_weight_dir):
     os.makedirs(model_weight_dir)
 

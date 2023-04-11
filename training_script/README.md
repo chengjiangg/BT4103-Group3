@@ -52,7 +52,7 @@ The training excel file is stored in the [data folder](https://github.com/chengj
 The model can be trained end-to-end with the following code:
 
 ```bash
-python main.py --excel_filename en_dataset.xlsx --sheet_name Sheet1 --classifer_type en
+python main.py --excel_filename en_dataset.xlsx --sheet_name Sheet1 --classifier_type en
 ```
 
 Every epoch, the training log and model weight will be saved in the `logs/training.log` file and `model_weights/text_classifier` directory respectively. The log filename and model weight directory basename can be configured via the command-line options `log_filename` and `saved_model_name` respectively.

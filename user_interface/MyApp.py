@@ -31,6 +31,8 @@ def load_dataset():
     else:
         return None
 
+# Function to retrieve emotion and stance count for filtered entitiesß
+
 
 def entities_info(df, filtered_entities):
     df_filtered = df[df['entity'].isin(filtered_entities)]
@@ -41,6 +43,8 @@ def entities_info(df, filtered_entities):
         df_filtered['stance'].value_counts(dropna=True, sort=True)).reset_index()
     entity_stance_count.columns = ['stance', 'counts']
     return entity_emotion_count, entity_stance_count
+
+# Function to label uploaded dataset
 
 
 def predict(df, model_type):
@@ -69,11 +73,15 @@ def predict(df, model_type):
         'stance').reset_index(name="counts")
     return prediction_df, emotion_count, stance_count
 
+# Function to plot the bar chart for the labelled dataset
+
 
 def plot_fig(df, xCol, yCol, title, labels, colorMap):
     fig = px.bar(df, x=xCol, y=yCol, color=xCol,
                  color_discrete_map=colorMap, text=yCol, title=title, labels=labels)
     return fig
+
+# Function to export labelled dataset to excel
 
 
 def export_to_excel(df):

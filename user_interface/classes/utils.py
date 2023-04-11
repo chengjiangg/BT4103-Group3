@@ -9,7 +9,7 @@ from .model import DoubleClassifier
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-
+# Function to load the uploaded dataset for labelling by model
 def get_dataloader(dataset, model_type, batch_size=32):
     if model_type.lower() == 'en':
         ds = EN_SocialMediaDS(dataset, 'bert-base-uncased')
@@ -18,7 +18,7 @@ def get_dataloader(dataset, model_type, batch_size=32):
     dl = DataLoader(ds, batch_size=batch_size, collate_fn=ds.collate_fn)
     return ds, dl
 
-
+# Function to get the model
 def get_model(model_weight_path, model_type, tokenizer_size):
     if model_type.lower() == 'en':
         model_ckpt = 'bert-base-uncased'
@@ -34,15 +34,15 @@ def get_model(model_weight_path, model_type, tokenizer_size):
     model.load_state_dict(model_weight)
     return model
 
-
+# Function to return emotion label from list of probabilities
 def map_emotion(emotion_labels, probabilities):
     return emotion_labels[np.argmax(probabilities)]
 
-
+# Function to return stance label from list of probabilities
 def map_stance(stance_labels, probabilities):
     return stance_labels[np.argmax(probabilities)]
 
-
+# Function to label uploaded dataset 
 def run_prediction(dataset, model_weight_path, model_type, batch_size=32):
     ds, dl = get_dataloader(dataset, model_type, batch_size=batch_size)
     model = get_model(model_weight_path, model_type, ds.get_tokenizer_size())

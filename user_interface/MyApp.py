@@ -32,8 +32,6 @@ def load_dataset():
         return None
 
 # Function to retrieve emotion and stance count for filtered entitiesß
-
-
 def entities_info(df, filtered_entities):
     df_filtered = df[df['entity'].isin(filtered_entities)]
     entity_emotion_count = pd.DataFrame(
@@ -45,8 +43,6 @@ def entities_info(df, filtered_entities):
     return entity_emotion_count, entity_stance_count
 
 # Function to label uploaded dataset
-
-
 def predict(df, model_type):
     if model_type.lower() == 'en':
         model_weight_path = "saved_models/en_model_weight.pth"
@@ -74,16 +70,12 @@ def predict(df, model_type):
     return prediction_df, emotion_count, stance_count
 
 # Function to plot the bar chart for the labelled dataset
-
-
 def plot_fig(df, xCol, yCol, title, labels, colorMap):
     fig = px.bar(df, x=xCol, y=yCol, color=xCol,
                  color_discrete_map=colorMap, text=yCol, title=title, labels=labels)
     return fig
 
 # Function to export labelled dataset to excel
-
-
 def export_to_excel(df):
     towrite = io.BytesIO()
     df.to_excel(

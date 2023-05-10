@@ -154,6 +154,7 @@ class ZH_SocialMediaDS(Dataset):
         if len(tokens) > self.max_token_length:
             # get index of entity in comment
             # some entity is companied with puncatuations i.e. boarders,
+            entity_ind = 0
             for i, word in enumerate(tokens):
                 if "[ENTITY]" in word:
                     entity_ind = i

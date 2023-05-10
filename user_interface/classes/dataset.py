@@ -140,10 +140,12 @@ class ZH_SocialMediaDS(Dataset):
         if len(tokens) > self.max_token_length:
             # get index of entity in comment
             # some entity is companied with puncatuations i.e. boarders,
+            entity_ind = None
             for i, word in enumerate(tokens):
                 if "[ENTITY]" in word:
                     entity_ind = i
                     break
+            assert entity_ind == None, "{row['entity']} does not exist in {row['text']}"
             start = max(entity_ind - int(self.max_token_length/2), 0)
             end = start + self.max_token_length
             comment = tokens[start:end]
